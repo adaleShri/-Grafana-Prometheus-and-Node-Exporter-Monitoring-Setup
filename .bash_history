@@ -1,19 +1,29 @@
+docker ps -a
 cd
-docker-compose --version
-apt install docker-compose
-docker-compose --version
-mkdir grafana-prometheus-monitoring
-cd grafana-prometheus-monitoring
-sudo usermod -aG docker $USER
-newgrp docker
-sudo ufw allow 9090/tcp
-sudo ufw allow 9100/tcp
-sudo ufw allow 3000/tcp
-sudo ufw reload
-sudo apt update && sudo apt install -y curl vim htop
-vim docker-compose.yml
-vim prometheus.yml
-# Pull and start containers
-docker-compose up -d
-# Verify all services are running
-docker ps
+ls
+git int
+ls
+cd grafana-prometheus-monitoring/
+ls
+cd
+ls
+cd
+cd grafana-prometheus-monitoring/
+ls
+cd ..
+ls
+vim READ.ME
+ls
+git init
+ssh-keygen
+ls
+cd .ssh/
+ls
+cat id_ed25519.pub 
+cd
+git remote -v
+git remote add origin git@github.com:adaleShri/-Grafana-Prometheus-and-Node-Exporter-Monitoring-Setup.git
+git remote -v
+git add .
+git status
+rm -f .bashrc .bash_history .profile 
