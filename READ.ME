@@ -1,0 +1,181 @@
+# 📊 Grafana, Prometheus, and Node Exporter Monitoring Setup
+
+## 📋 **Project Overview**
+This project sets up a system monitoring stack using **Grafana**, **Prometheus**, and **Node Exporter** with Docker. It enables real-time monitoring of system metrics like CPU usage, memory, disk I/O, and network stats, visualized through customizable dashboards in Grafana.
+
+---
+
+## ✅ **Prerequisites**
+
+Before starting, ensure the following are installed on your machine:
+
+1. **Docker**
+   - [Install Docker](https://docs.docker.com/get-docker/)
+   - Verify installation:
+     ```bash
+     docker --version
+     ```
+
+2. **Docker Compose**
+   - [Install Docker Compose](https://docs.docker.com/compose/install/)
+   - Verify installation:
+     ```bash
+     docker-compose --version
+     ```
+
+3. **Project Directory**
+   - Create a folder for your setup:
+     ```bash
+     mkdir grafana-prometheus-monitoring
+     cd grafana-prometheus-monitoring
+     ```
+
+4. **Firewall Configuration** (if applicable):
+   - Open required ports:
+     ```bash
+     sudo ufw allow 9090/tcp  # Prometheus
+     sudo ufw allow 9100/tcp  # Node Exporter
+     sudo ufw allow 3000/tcp  # Grafana
+     sudo ufw reload
+     ```
+
+---
+
+## 🏗️ **Project Structure**
+
+```
+grafana-prometheus-monitoring/
+│
+├── docker-compose.yml       # Docker Compose configuration
+├── prometheus.yml           # Prometheus configuration
+└── README.md                # Project documentation
+```
+
+---
+
+## ⚙️ **Setup Instructions**
+
+### 1️⃣ Create `docker-compose.yml`
+
+Add the following content to a `docker-compose.yml` file:
+
+```yaml
+version: '3.7'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: unless-stopped
+```
+
+### 2️⃣ Create `prometheus.yml`
+
+Create a `prometheus.yml` file in the same directory:
+
+```yaml
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+```
+
+### 3️⃣ Run the Stack
+
+Run the following commands to build and start your containers:
+
+```bash
+# Start all services in detached mode
+docker-compose up -d
+
+# Check running containers
+docker ps
+```
+
+---
+
+## 🔗 **Accessing Services**
+
+- **Prometheus**: [http://localhost:9090](http://localhost:9090)
+- **Node Exporter Metrics**: [http://localhost:9100/metrics](http://localhost:9100/metrics)
+- **Grafana Dashboard**: [http://localhost:3000](http://localhost:3000)
+  - Default Login:
+    - Username: `admin`
+    - Password: `admin`
+
+---
+
+## 📊 **Configure Grafana Dashboard**
+
+1. **Login to Grafana** using default credentials.
+2. Navigate to **Configuration → Data Sources → Add Data Source**.
+3. Select **Prometheus** and configure:
+   - URL: `http://prometheus:9090`
+4. **Save & Test** the data source.
+5. Import a prebuilt dashboard:
+   - Go to **Create → Import**.
+   - Use Dashboard ID: `1860` (Node Exporter Full from Grafana Labs).
+
+---
+
+## 🛠️ **Troubleshooting**
+
+- Check logs of a specific container:
+  ```bash
+  docker logs <container_name>
+  ```
+- Restart a specific service:
+  ```bash
+  docker-compose restart grafana
+  ```
+- Stop and remove all services:
+  ```bash
+  docker-compose down
+  ```
+
+---
+
+## 📚 **Resources**
+
+- [Prometheus Documentation](https://prometheus.io/docs/introduction/overview/)
+- [Grafana Documentation](https://grafana.com/docs/grafana/latest/)
+- [Node Exporter Documentation](https://prometheus.io/docs/guides/node-exporter/)
+
+---
+
+## 🚀 **Contributing**
+Feel free to submit issues or pull requests for improvements.
+
+---
+
+## 📝 **License**
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+
